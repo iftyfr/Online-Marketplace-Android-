@@ -1,0 +1,540 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <LinearLayout xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".AdPostActivity">
+
+        <TextView
+            android:id="@+id/productType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="#c15c04"
+            android:padding="20dp"
+            android:text="Mobile Phone"
+            android:textColor="#fff"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="#dcdfe4"
+            android:gravity="center"
+            android:text="Add location for your ad"
+            android:textColor="#000000"
+            android:textSize="17sp" />
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/password_text_input"
+            style="Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Location"
+            app:errorEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/locationET"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:inputType="text"
+                android:textColor="#000000"
+                android:textSize="19sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="10dp"
+            android:background="#dcdfe4"
+            android:gravity="center"
+            android:text="Add a photo of your product"
+            android:textColor="#000000"
+            android:textSize="17sp" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:indeterminate="true"
+            android:visibility="invisible"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            />
+
+        <ImageView
+            android:id="@+id/image_post"
+            android:layout_width="match_parent"
+            android:layout_height="275dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:src="@drawable/default_post_image"
+            android:contentDescription="@string/post_image"
+            android:onClick="deployPostImage"
+            android:scaleType="fitXY" />
+
+        <Button
+            android:id="@+id/addPhotoBtn"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginLeft="90dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="90dp"
+            android:backgroundTint="#c15c04"
+            android:onClick="deployPostImage"
+            android:gravity="center"
+            android:background="@drawable/custom_sign_up_button_design"
+            android:padding="7dp"
+            android:text="Choose photo"
+            android:textColor="#fff"
+            android:textSize="19sp"
+            android:textAllCaps="false"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="20dp"
+            android:background="#dcdfe4"
+            android:gravity="center"
+            android:text="Details of your product"
+            android:textColor="#000000"
+            android:textSize="17sp" />
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/productNameEtLayout"
+            android:hint="Product Name"
+            app:errorEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/productNameET"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:inputType="text"
+                android:textColor="#000000"
+                android:textSize="19sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/deviceTpTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:text="Device type" />
+
+        <RadioGroup
+            android:id="@+id/deviceTpRG"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:orientation="vertical">
+
+            <RadioButton
+                android:id="@+id/desktop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Desktop computer"
+                android:onClick="getDeviceType"/>
+
+            <RadioButton
+                android:id="@+id/laptop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Laptop/Netbook"
+                android:onClick="getDeviceType"/>
+
+            <RadioButton
+                android:id="@+id/tablet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tablet"
+                android:onClick="getDeviceType"/>
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/transmissionTV"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:text="Transmission" />
+
+        <RadioGroup
+            android:id="@+id/transmissionRG"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:orientation="vertical">
+
+            <RadioButton
+                android:id="@+id/manual"
+                android:onClick="transmissionType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Manual" />
+
+            <RadioButton
+                android:id="@+id/Automatic"
+                android:onClick="transmissionType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Automatic" />
+
+            <RadioButton
+                android:id="@+id/Other"
+                android:onClick="transmissionType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Other transmission" />
+        </RadioGroup>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:hint="Brand"
+            android:id="@+id/brandEtLayout"
+            app:errorEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/brandET"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:inputType="text"
+                android:textColor="#000000"
+                android:textSize="19sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/modelEtLayout"
+            android:visibility="gone"
+            android:hint="Model"
+            app:errorEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/modelET"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:inputType="text"
+                android:textColor="#000000"
+                android:textSize="19sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:hint="Engine capacity (cc)"
+            android:id="@+id/engineEtLayout"            app:errorEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/engineET"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:inputType="number"
+                android:textColor="#000000"
+                android:textSize="19sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:hint="Model year"
+            android:id="@+id/modelYrEtLayout"
+            app:errorEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/modelYrET"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:inputType="number"
+                android:textColor="#000000"
+                android:textSize="19sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/bedsEtLayout"
+            android:visibility="gone"
+            android:hint="Beds"
+            app:errorEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/bedsET"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:inputType="number"
+                android:textColor="#000000"
+                android:textSize="19sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/bathsEtLayout"
+            android:visibility="gone"
+            android:hint="Baths"
+            app:errorEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/bathsET"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:inputType="number"
+                android:textColor="#000000"
+                android:textSize="19sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/sizeEtLayout"
+            android:visibility="gone"
+            android:hint="Size (sqft)"
+            app:errorEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/sizeET"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:inputType="number"
+                android:textColor="#000000"
+                android:textSize="19sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <TextView
+            android:id="@+id/landTypeTV"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="Land type"
+            android:textSize="15sp" />
+
+        <Spinner
+            android:id="@+id/landTypeSP"
+            android:visibility="gone"
+            style="@style/Widget.AppCompat.Spinner.Underlined"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            android:tooltipText="ddd" />
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:hint="Land size"
+            android:id="@+id/landsizeEtLayout"
+            app:errorEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/landsizeET"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:inputType="number"
+                android:textColor="#000000"
+                android:textSize="19sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <TextView
+            android:id="@+id/landUnitsTV"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="Land size unit"
+            android:textSize="15sp" />
+
+        <Spinner
+            android:id="@+id/landUitsSP"
+            android:visibility="gone"
+            style="@style/Widget.AppCompat.Spinner.Underlined"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:tooltipText="ddd" />
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/housesizeEtLayout"
+            android:visibility="gone"
+            android:hint="House size"
+            app:errorEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/housesizeET"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:inputType="number"
+                android:textColor="#000000"
+                android:textSize="19sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/houseUnitsTV"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="House size unit"
+            android:textSize="15sp" />
+
+        <Spinner
+            android:id="@+id/houseUitsSP"
+            android:visibility="gone"
+            style="@style/Widget.AppCompat.Spinner.Underlined"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:tooltipText="ddd" />
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/titleEtLayout"
+            android:visibility="gone"
+            android:hint="Title"
+            app:errorEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/titleET"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:inputType="text"
+                android:textColor="#000000"
+                android:textSize="19sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Description"
+            app:errorEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/descriptionET"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:textColor="#000000"
+                android:textSize="17sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Price (Tk)"
+            app:errorEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/priceET"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:inputType="number"
+                android:textColor="#000000"
+                android:textSize="19sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <CheckBox
+            android:id="@+id/negotiableCB"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="Negotiable" />
+
+
+        <Button
+            android:id="@+id/addPostBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:backgroundTint="#c15c04"
+            android:gravity="center"
+            android:background="@drawable/custom_sign_up_button_design"
+            android:onClick="postAd"
+            android:padding="7dp"
+            android:text="Post Ad"
+            android:textColor="#fff"
+            android:textSize="19sp"
+            android:textAllCaps="false"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="10dp"
+            android:background="#dcdfe4"
+            android:gravity="center"
+            android:text="By posting this ad you agree to our terms and conditions"
+            android:textColor="#0e0e0e"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+</ScrollView>

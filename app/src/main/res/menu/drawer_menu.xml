@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav_home"
+            android:title="Home"
+            android:onClick="navHome"
+            android:icon="@drawable/home" />
+        <item
+            android:id="@+id/nav_favourite"
+            android:title="Favourites"
+            android:onClick="favouriteProducts"
+            android:icon="@drawable/favourite_red" />
+        <item
+            android:id="@+id/nav_logout"
+            android:title="Logout"
+            android:onClick="logoutCustomer"
+            android:icon="@drawable/logout" />
+    </group>
+
+    <item android:title="Others">
+        <menu>
+            <item
+                android:id="@+id/company_profile"
+                android:title="My Company"
+                android:onClick="myCompanyProfile"
+                android:icon="@drawable/my_company" />
+            <item
+                android:id="@+id/nav_share"
+                android:title="Share"
+                android:icon="@drawable/ic_share_black_24dp" />
+        </menu>
+    </item>
+
+
+</menu>

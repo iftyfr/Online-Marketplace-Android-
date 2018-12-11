@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#df280260</color>
+    <color name="colorPrimaryDark">#202839</color>
+    <color name="colorAccent">#c95a26</color>
+
+    <color name="whiteTransparentHalf">#80ffffff</color>
+    <color name="primaryTransparentHalf">#280260</color>
+    <color name="viewColor">#dcdfe4</color>
+
+
+</resources>

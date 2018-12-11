@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".NewAdPostActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary">
+
+    </androidx.appcompat.widget.Toolbar>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Electronics"
+        android:drawableLeft="@drawable/electronics"
+        android:drawablePadding="8dp"
+        android:layout_marginLeft="20dp"
+        android:padding="12dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginBottom="7dp"
+        android:onClick="electItem"
+        android:textSize="20dp"
+        android:textColor="#000"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Car &amp; Vehicles"
+        android:drawableLeft="@drawable/car"
+        android:drawablePadding="8dp"
+        android:padding="12dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="7dp"
+        android:layout_marginTop="7dp"
+        android:onClick="carItem"
+        android:textSize="20dp"
+        android:textColor="#000"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Property"
+        android:drawableLeft="@drawable/property"
+        android:drawablePadding="8dp"
+        android:padding="12dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="7dp"
+        android:layout_marginTop="7dp"
+        android:onClick="propertyItem"
+        android:textSize="20dp"
+        android:textColor="#000"/>
+
+
+</LinearLayout>

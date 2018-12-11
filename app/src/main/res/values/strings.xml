@@ -1,0 +1,48 @@
+<resources>
+    <string name="app_name">My Products</string>
+
+    <string name="your_email">Your Email</string>
+    <string name="password">Password</string>
+    <string name="button_login">Login to account</string>
+    <string name="button_account_create">Create Account</string>
+    <string name="button_createAc">Create new account</string>
+    <string name="no_account">Don\'t have an account?</string>
+    <string name="action_search">Search</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_logout">Logout</string>
+    <string name="reg_confirm_pass">Confirm Password</string>
+    <string name="reg_login_text">Already have an account?</string>
+    <string name="setup_save">Save Account settings</string>
+    <string name="save_settings">Save Account Settings</string>
+    <string name="post_image">default post image</string>
+    <string name="company_name">Company Name</string>
+    <string name="mobile_number">Mobile Number</string>
+    <string name="address">Address</string>
+    <string name="account_settings_save">Save Account Settings</string>
+
+
+    <string-array name="units">
+        <item>katha</item>
+        <item>bigha</item>
+        <item>acres</item>
+        <item>shotok</item>
+        <item>decimel</item>
+    </string-array>
+
+    <string-array name="land_type">
+        <item>Agricultural</item>
+        <item>Commercial</item>
+        <item>Residential</item>
+        <item>Other</item>
+    </string-array>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="user_name">User Name</string>
+    <string name="product_name">Product Name</string>
+    <string name="price">Price</string>
+    <string name="description">Description</string>
+</resources>
