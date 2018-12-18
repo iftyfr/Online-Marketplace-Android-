@@ -8,18 +8,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -30,135 +30,120 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 import javax.annotation.Nullable;
 
-public class ProductDetailsActivity extends AppCompatActivity {
-    private BottomNavigationView mainBottomNav;
-    private String userId;
-    private String postId;
-    private String companyName=null;
-    private String logoThumbnail=null;
-    private ImageView productImage, companyLogo, favimage;
-    private TextView priceTv,companyNameTv, companyNameAllProTv, productNameTv,productDescription;
-    private RecyclerView otherProductsList;
-    private Toolbar proDetailsToolbar;
+public class CompanyProfileActivity extends AppCompatActivity {
 
+    private ImageView profileImage;
+    private TextView companyName;
+    private TextView email;
+    private TextView ratings;
+    private TextView address;
+    private TextView contuct;
+    private ImageButton editProfile;
+    private RecyclerView profileRecyclerProducts;
+    private ScrollView scrollView;
+    private Toolbar companyProToolbar;
+
+    private String userId;
     private ArrayList<Product> productList;
     private FirebaseFirestore firebaseFirestore;
     private ProductAdapter productAdapter = null;
     private FirebaseAuth mAuth;
     private DocumentSnapshot lastVisible;
     private Boolean isNewPostFirstLoad = true;
-    private ScrollView scrollView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_product_details);
+        setContentView(R.layout.activity_company_profile);
 
-        userId=getIntent().getStringExtra("userId");
-        postId=getIntent().getStringExtra("postId");
-        companyName=getIntent().getStringExtra("companyName");
-        logoThumbnail=getIntent().getStringExtra("logoThumbnail");
+        profileImage=findViewById(R.id.profile_image);
+        companyName=findViewById(R.id.profile_company_name);
+        email=findViewById(R.id.profile_email);
+        ratings=findViewById(R.id.profile_company_rating);
+        address=findViewById(R.id.profile_company_address);
+        contuct=findViewById(R.id.profile_mobile);
+        editProfile=findViewById(R.id.profile_edit);
+        profileRecyclerProducts=findViewById(R.id.profile_recycler);
+        scrollView=findViewById(R.id.scrollViewProfile);
+        companyProToolbar=findViewById(R.id.companyProToolbar);
 
-        productImage = findViewById(R.id.pro_details_image);
-        companyLogo = findViewById(R.id.pro_details_comp_logo);
-        favimage = findViewById(R.id.pro_details_favourite);
-        priceTv = findViewById(R.id.pro_details_price);
-        companyNameTv = findViewById(R.id.pro_details_comp_name);
-        productNameTv = findViewById(R.id.pro_details_name);
-        productDescription = findViewById(R.id.product_description);
-        companyNameAllProTv = findViewById(R.id.all_pro_company_name);
-        otherProductsList = findViewById(R.id.other_products);
-        scrollView=findViewById(R.id.scrollView);
-        proDetailsToolbar=findViewById(R.id.pro_details_toolbar);
-
-        setSupportActionBar(proDetailsToolbar);
+        setSupportActionBar(companyProToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Product Details");
+        getSupportActionBar().setTitle("");
 
         scrollView.setFocusableInTouchMode(true);
         scrollView.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
 
-        otherProductsList.setNestedScrollingEnabled(false);
+        profileRecyclerProducts.setNestedScrollingEnabled(false);
 
-        if (companyName != null && logoThumbnail != null){
-            companyNameTv.setText(companyName);
-            companyNameAllProTv.setText(companyName);
-            Glide.with(this).load(logoThumbnail).into(companyLogo);
-        }
-        else {
-            companyNameTv.setText("User Name");
-            companyNameAllProTv.setText("");
-            Glide.with(this).load(R.drawable.company_logo).into(companyLogo);
-        }
 
+        userId=getIntent().getStringExtra("userId");
         firebaseFirestore=FirebaseFirestore.getInstance();
         mAuth=FirebaseAuth.getInstance();
+        if (mAuth.getCurrentUser()!=null){
+            String currentUserId=mAuth.getUid();
+            if (currentUserId.equals(userId)){
+                editProfile.setVisibility(View.VISIBLE);
+            }
+        }
 
-        firebaseFirestore.collection("Users").document(userId).collection("Posts").document(postId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        firebaseFirestore.collection("Users").document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onComplete(Task<DocumentSnapshot>task) {
+            public void onComplete(Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()){
-                    if (Objects.requireNonNull(task.getResult()).exists()){
-                        String product_name = task.getResult().getString("productName");
-                        String product_price = task.getResult().getString("price");
-                        String product_desc = task.getResult().getString("description");
-                        String product_image = task.getResult().getString("postImage");
+                    if (task.getResult().exists()){
+                        Toast.makeText(CompanyProfileActivity.this, "exist", Toast.LENGTH_SHORT).show();
 
-                        productNameTv.setText(product_name);
-                        priceTv.setText(product_price);
-                        productDescription.setText(product_desc);
-                        Glide.with(ProductDetailsActivity.this).load(product_image).into(productImage);
+                        String company_name = task.getResult().getString("companyName");
+                        String mobile_number = task.getResult().getString("mobileNumber");
+                        String company_address = task.getResult().getString("companyAddress");
+                        String company_email = task.getResult().getString("email");
+                        String company_logo = task.getResult().getString("companyLogo");
+                        String company_thumbnail = task.getResult().getString("logoThumbnail");
+
+                        RequestOptions placeHolderRequest = new RequestOptions();
+                        placeHolderRequest.placeholder(R.drawable.company_logo);
+
+                        Glide.with(CompanyProfileActivity.this).applyDefaultRequestOptions(placeHolderRequest).load(company_logo).into(profileImage);
+
+                        companyName.setText(company_name);
+                        email.setText(company_email);
+                        address.setText(company_address);
+                        contuct.setText(mobile_number);
+
                     }
                     else {
-                        Toast.makeText(ProductDetailsActivity.this, "Error : "+task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(CompanyProfileActivity.this,SetupActivity.class);
+                        intent.putExtra("intentChecker","first_time");
+                        finish();
+                        startActivity(intent);
                     }
                 }
                 else {
-                    Toast.makeText(ProductDetailsActivity.this, "Error : "+task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    String error = task.getException().toString();
+                    Toast.makeText(CompanyProfileActivity.this, "RETRIEVE ERROR : "+error, Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
-        mainBottomNav=findViewById(R.id.mainBottomNavView);
-
-        mainBottomNav.setItemIconTintList(null);
-        mainBottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                switch (menuItem.getItemId()) {
-                    case R.id.bottom_action_add_cart:
-                        Toast.makeText(ProductDetailsActivity.this, "Added to cart", Toast.LENGTH_SHORT).show();
-                        return true;
-
-                    case R.id.bottom_action_buy_now:
-                        Toast.makeText(ProductDetailsActivity.this, "Buy now", Toast.LENGTH_SHORT).show();
-                        return true;
-
-
-                    default:
-                        return false;
-                }
-            }
-        });
 
         productList=new ArrayList<>();
         productAdapter = new ProductAdapter(this,productList);
-        otherProductsList.setLayoutManager(new GridLayoutManager(this,2));
-        otherProductsList.setAdapter(productAdapter);
+        profileRecyclerProducts.setLayoutManager(new GridLayoutManager(this,2));
+        profileRecyclerProducts.setAdapter(productAdapter);
 
 
-        otherProductsList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        profileRecyclerProducts.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
 
                 Boolean reachedBottom = !recyclerView.canScrollVertically(1);
                 if (reachedBottom){
-                    Toast.makeText(ProductDetailsActivity.this, "Reached"+lastVisible.getString("desc"), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CompanyProfileActivity.this, "Reached"+lastVisible.getString("desc"), Toast.LENGTH_SHORT).show();
                     loadMorePost();
                 }
             }
@@ -194,6 +179,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
             }
         });
     }
+
     public void loadMorePost(){
         Query nextQuery = firebaseFirestore.collection("Users").document(userId).collection("Posts")
                 .orderBy("timestamp", Query.Direction.DESCENDING)
@@ -222,17 +208,9 @@ public class ProductDetailsActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        Intent intent = new Intent(ProductDetailsActivity.this,MainActivity.class);
-        finish();
-        startActivity(intent);
-    }
-
-    public void companyProfile(View view) {
-        Intent intent = new Intent(this,CompanyProfileActivity.class);
-        intent.putExtra("userId",userId);
+    public void editProfile(View view) {
+        Intent intent = new Intent(CompanyProfileActivity.this,SetupActivity.class);
+        intent.putExtra("intentChecker","not_first_time");
         startActivity(intent);
     }
     @Override
@@ -241,5 +219,3 @@ public class ProductDetailsActivity extends AppCompatActivity {
         return true;
     }
 }
-
-

@@ -38,8 +38,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -55,6 +53,7 @@ public class SetupActivity extends AppCompatActivity {
     private CircleImageView companyLogo;
     private EditText companyName;
     private EditText mobileNumber;
+    private EditText email;
     private EditText companyAddress;
     private Button accSaveBtn;
     private StorageReference mStorageRef;
@@ -71,6 +70,7 @@ public class SetupActivity extends AppCompatActivity {
     private Uri companyThumbDlUri;
     private String company_name;
     private String mobile_number;
+    private String company_email;
     private String company_address;
     private String intentChecker;
 
@@ -88,10 +88,11 @@ public class SetupActivity extends AppCompatActivity {
         }
 
 
-        companyLogo=findViewById(R.id.company_logo);
-        companyName=findViewById(R.id.company_name);
-        mobileNumber=findViewById(R.id.mobile_number);
-        companyAddress=findViewById(R.id.company_address);
+        companyLogo=findViewById(R.id.setup_company_logo);
+        companyName=findViewById(R.id.setup_company_name);
+        mobileNumber=findViewById(R.id.setup_mobile_number);
+        email=findViewById(R.id.setup_email);
+        companyAddress=findViewById(R.id.setup_company_address);
         accSaveBtn=findViewById(R.id.setup_btn);
         setupProgressBar=findViewById(R.id.setupProgressBar);
 
@@ -121,6 +122,7 @@ public class SetupActivity extends AppCompatActivity {
                         String company_name = task.getResult().getString("companyName");
                         String mobile_number = task.getResult().getString("mobileNumber");
                         String company_address = task.getResult().getString("companyAddress");
+                        String company_email = task.getResult().getString("email");
                         String company_logo = task.getResult().getString("companyLogo");
                         String company_thumbnail = task.getResult().getString("logoThumbnail");
 
@@ -129,6 +131,7 @@ public class SetupActivity extends AppCompatActivity {
 
                         companyName.setText(company_name);
                         mobileNumber.setText(mobile_number);
+                        email.setText(company_email);
                         companyAddress.setText(company_address);
 
                         RequestOptions placeHolderRequest = new RequestOptions();
@@ -239,20 +242,22 @@ public class SetupActivity extends AppCompatActivity {
     public void saveAccSettings(View view) {
         company_name = companyName.getText().toString();
         mobile_number = mobileNumber.getText().toString();
+        company_email = email.getText().toString();
         company_address = companyAddress.getText().toString();
         if (!TextUtils.isEmpty(company_name) && !TextUtils.isEmpty(mobile_number) && !TextUtils.isEmpty(company_address)){
+            if (TextUtils.isEmpty(company_email)){
+                company_email="";
+            }
             if (isChanged){
                 setupProgressBar.setVisibility(View.VISIBLE);
                 final StorageReference photo_path= mStorageRef.child("company_logos").child(user_id+".jpg");
                 if (companyImageUri ==null){
                     companyImageUri = companyDefaultUri;
                 }
-                Toast.makeText(this, "1", Toast.LENGTH_SHORT).show();
                 photo_path.putFile(companyImageUri).addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         if (taskSnapshot.getTask().isSuccessful()){
-                            Toast.makeText(SetupActivity.this, "2", Toast.LENGTH_SHORT).show();
                             //When the image has successfully uploaded, get its download URL
                             photo_path.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
@@ -260,15 +265,13 @@ public class SetupActivity extends AppCompatActivity {
                                     companyDownloadUri = uri;
 
 
-                                    Toast.makeText(SetupActivity.this, "3", Toast.LENGTH_SHORT).show();
-
                                     if (companyImageUri==companyDefaultUri){
                                         try {
                                             companyCompressedImageFile = MediaStore.Images.Media.getBitmap(SetupActivity.this.getContentResolver(),companyImageUri);
                                         } catch (IOException e) {
                                             e.printStackTrace();
 
-                                            Toast.makeText(SetupActivity.this, "4"+e.getMessage(), Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(SetupActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                                         }
                                     }
                                     else {
@@ -300,7 +303,7 @@ public class SetupActivity extends AppCompatActivity {
                                                         @Override
                                                         public void onSuccess(Uri uri) {
                                                             companyThumbDlUri= uri;
-                                                            storeToFirestore(companyDownloadUri, companyThumbDlUri,company_name,mobile_number,company_address,"seller");
+                                                            storeToFirestore(companyDownloadUri, companyThumbDlUri,company_name,mobile_number,company_email,company_address,"seller");
                                                         }
                                                     });
                                                 }
@@ -322,7 +325,7 @@ public class SetupActivity extends AppCompatActivity {
                 });
             }
             else {
-                storeToFirestore(companyNotChangedUri, companyNotChangedThumbUri,company_name,mobile_number,company_address,"seller");
+                storeToFirestore(companyNotChangedUri, companyNotChangedThumbUri,company_name,mobile_number,company_email,company_address,"seller");
             }
 
         }
@@ -331,15 +334,17 @@ public class SetupActivity extends AppCompatActivity {
         }
     }
 
-    private void storeToFirestore(Uri companyDownloadUri, Uri companyThumbDlUri,String company_name,String mobile_number, String address, String seller) {
+    private void storeToFirestore(Uri companyDownloadUri, Uri companyThumbDlUri,String company_name,String mobile_number,String company_email, String address, String seller) {
         Map<String, String> userMap = new HashMap<>();
         userMap.put("companyName",company_name);
         userMap.put("mobileNumber",mobile_number);
+        userMap.put("email",company_email);
         userMap.put("companyAddress",address);
         userMap.put("companyLogo",companyDownloadUri.toString());
         userMap.put("logoThumbnail",companyThumbDlUri.toString());
 
         final Map<String, String> customerMap = new HashMap<>();
+        customerMap.put("userId",user_id);
         customerMap.put("customerOrSeller",seller);
         customerMap.put("userName",company_name);
         customerMap.put("mobileNumber",mobile_number);

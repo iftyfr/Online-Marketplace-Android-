@@ -231,7 +231,6 @@ public class CustomerSetupActivity extends AppCompatActivity {
         if (!TextUtils.isEmpty(user_name) && !TextUtils.isEmpty(mobile_number) && !TextUtils.isEmpty(customer_address)) {
             if (isChanged) {
                 customerProgressBar.setVisibility(View.VISIBLE);
-                user_id = mAuth.getCurrentUser().getUid();
                 final StorageReference photo_path = mStorageRef.child("customer_images").child(user_id + ".jpg");
                 if (mainImageUri == null) {
                     mainImageUri = defaultUri;
@@ -273,7 +272,7 @@ public class CustomerSetupActivity extends AppCompatActivity {
                                                         public void onSuccess(Uri uri) {
                                                             Uri thumbDownloadUri = uri;
 
-                                                            storeToFirestore(mainDownloadUri, thumbDownloadUri, mobile_number, customer_address, user_name,"customer");
+                                                            storeToFirestore(user_id,mainDownloadUri, thumbDownloadUri, mobile_number, customer_address, user_name,"customer");
                                                         }
                                                     });
                                                 }
@@ -293,7 +292,7 @@ public class CustomerSetupActivity extends AppCompatActivity {
                     }
                 });
             } else {
-                storeToFirestore(notChangedUri, notChangedThumbUri, mobile_number, customer_address, user_name,"customer");
+                storeToFirestore(user_id,notChangedUri, notChangedThumbUri, mobile_number, customer_address, user_name,"customer");
             }
 
         } else {
@@ -302,9 +301,10 @@ public class CustomerSetupActivity extends AppCompatActivity {
     }
 
 
-    private void storeToFirestore(Uri dlUri, Uri thumbDownloadUri, String mobile_number, String address, String user_name,String customer) {
+    private void storeToFirestore(String user_id, Uri dlUri, Uri thumbDownloadUri, String mobile_number, String address, String user_name,String customer) {
 
         Map<String, String> customerMap = new HashMap<>();
+        customerMap.put("userId",user_id);
         customerMap.put("customerOrSeller",customer);
         customerMap.put("userName",user_name);
         customerMap.put("mobileNumber",mobile_number);

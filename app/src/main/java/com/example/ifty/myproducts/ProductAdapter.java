@@ -115,6 +115,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             }
         });
 
+        holder.companyName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context,CompanyProfileActivity.class);
+                intent.putExtra("userId",product.getUserId());
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override

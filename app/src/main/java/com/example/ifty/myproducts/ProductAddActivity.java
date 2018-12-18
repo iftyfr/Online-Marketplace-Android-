@@ -58,7 +58,7 @@ public class ProductAddActivity extends AppCompatActivity {
 
     private static final int IMAGE_CHOOSE_CODE = 1;
 
-    private TextView productType, deviceTpTV, transmissionTV, landTypeTV, landUnitsTV, houseUnitsTV;
+    private TextView deviceTpTV, transmissionTV, landTypeTV, landUnitsTV, houseUnitsTV;
 
     private TextInputEditText locationET, brandET, modelET, engineET,modelYrET, titleET, descriptionET, priceET, bedsET, bathsET, landsizeET, sizeET, housesizeET, productNameET;
 
@@ -89,7 +89,7 @@ public class ProductAddActivity extends AppCompatActivity {
     private FirebaseFirestore firebaseFirestore;
     private StorageReference mStorageReference;
     private String user_id;
-    private Toolbar toolbar;
+    private Toolbar prdctAddToolbar;
     private Uri postDownlUri=null;
     private Bitmap compressedImageFile;
 
@@ -105,7 +105,6 @@ public class ProductAddActivity extends AppCompatActivity {
         mProgressBar = findViewById(R.id.progressBar);
         addPhotoBtn = findViewById(R.id.addPhotoBtn);
         addPostBtn = findViewById(R.id.addPostBtn);
-        productType = findViewById(R.id.productType);
         deviceTpTV = findViewById(R.id.deviceTpTV);
         transmissionTV = findViewById(R.id.transmissionTV);
         landTypeTV = findViewById(R.id.landTypeTV);
@@ -143,6 +142,7 @@ public class ProductAddActivity extends AppCompatActivity {
         landsizeEtLayout = findViewById(R.id.landsizeEtLayout);
         sizeEtLayout = findViewById(R.id.sizeEtLayout);
         housesizeEtLayout = findViewById(R.id.housesizeEtLayout);
+        prdctAddToolbar = findViewById(R.id.prdctAddToolbar);
 
 
         mAuth=FirebaseAuth.getInstance();
@@ -152,7 +152,9 @@ public class ProductAddActivity extends AppCompatActivity {
 
 
         checkItem = getIntent().getStringExtra("item");
-        productType.setText(checkItem);
+        setSupportActionBar(prdctAddToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(checkItem);
 
         switch (checkItem) {
             case "Mobile Phones":
@@ -404,7 +406,7 @@ public class ProductAddActivity extends AppCompatActivity {
         final String price;
 
         if (negotiableCB.isChecked()) {
-            price = "\u09F3 " + Objects.requireNonNull(priceET.getText()).toString() + " (" + negotiableCB.getText().toString() + ")";
+            price = "\u09F3 " + Objects.requireNonNull(priceET.getText()).toString() + "\n (negotiable)";
         } else {
             price = "\u09F3 " + Objects.requireNonNull(priceET.getText()).toString();
         }
@@ -555,5 +557,9 @@ public class ProductAddActivity extends AppCompatActivity {
             }
         });
     }
-
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
 }

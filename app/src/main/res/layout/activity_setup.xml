@@ -29,7 +29,7 @@
             android:padding="8dp">
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/company_logo"
+                android:id="@+id/setup_company_logo"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
                 android:layout_marginStart="8dp"
@@ -57,11 +57,11 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/company_address" />
+                app:layout_constraintTop_toBottomOf="@+id/setup_company_address" />
 
 
             <EditText
-                android:id="@+id/company_name"
+                android:id="@+id/setup_company_name"
                 android:layout_width="0dp"
                 android:layout_height="60dp"
                 android:layout_marginTop="24dp"
@@ -74,10 +74,10 @@
                 android:textColorHint="@color/whiteTransparentHalf"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/company_logo" />
+                app:layout_constraintTop_toBottomOf="@+id/setup_company_logo" />
 
             <EditText
-                android:id="@+id/mobile_number"
+                android:id="@+id/setup_mobile_number"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -91,10 +91,10 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/company_name" />
+                app:layout_constraintTop_toBottomOf="@+id/setup_company_name" />
 
             <EditText
-                android:id="@+id/company_address"
+                android:id="@+id/setup_company_address"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -108,7 +108,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/mobile_number" />
+                app:layout_constraintTop_toBottomOf="@+id/setup_email" />
 
             <ProgressBar
                 android:id="@+id/setupProgressBar"
@@ -123,6 +123,22 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/setup_email"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="@color/whiteTransparentHalf"
+                android:ems="10"
+                android:hint="@string/email"
+                android:inputType="textEmailAddress"
+                android:padding="15dp"
+                android:textColor="@android:color/white"
+                android:textColorHint="@color/whiteTransparentHalf"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/setup_mobile_number" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>

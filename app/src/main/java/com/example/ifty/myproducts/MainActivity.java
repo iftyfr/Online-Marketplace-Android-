@@ -172,8 +172,9 @@ public class MainActivity extends AppCompatActivity {
                         else {
                             String customer_or_seller = task.getResult().getString("customerOrSeller");
                             if (customer_or_seller.equals("seller")){
-                                Intent intent = new Intent(MainActivity.this,SetupActivity.class);
+                                Intent intent = new Intent(MainActivity.this,CompanyProfileActivity.class);
                                 intent.putExtra("intentChecker","not_first_time");
+                                intent.putExtra("userId",user_id);
                                 startActivity(intent);
                             }
                             else if (customer_or_seller.equals("customer")){

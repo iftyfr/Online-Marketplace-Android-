@@ -1,6 +1,7 @@
 package com.example.ifty.myproducts;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,6 +14,7 @@ public class ItemsActivity extends AppCompatActivity {
     private ArrayList <Item> itemList;
     private RecyclerView itemRecyclerView;
     private String type;
+    private Toolbar itemToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +22,9 @@ public class ItemsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_items);
 
         itemRecyclerView=findViewById(R.id.item_recycleView);
+        itemToolbar=findViewById(R.id.itemToolbar);
+        setSupportActionBar(itemToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         itemList= new ArrayList<>();
         type=getIntent().getStringExtra("type");
@@ -50,5 +55,11 @@ public class ItemsActivity extends AppCompatActivity {
         itemRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         ItemAdapter itemAdapter=new ItemAdapter(this,itemList);
         itemRecyclerView.setAdapter(itemAdapter);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }

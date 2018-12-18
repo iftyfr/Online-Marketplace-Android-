@@ -1,6 +1,7 @@
 package com.example.ifty.myproducts;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,11 +15,17 @@ public class NewAdPostActivity extends AppCompatActivity {
 
     private FirebaseAuth firebaseAuth;
     private ArrayList<Item> arrayList;
+    private Toolbar newPostToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_ad_post);
+
+        newPostToolbar=findViewById(R.id.newPostToolbar);
+        setSupportActionBar(newPostToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         firebaseAuth = FirebaseAuth.getInstance();
     }
 
@@ -39,5 +46,11 @@ public class NewAdPostActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ItemsActivity.class);
         intent.putExtra("type", "Property");
         startActivity(intent);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }

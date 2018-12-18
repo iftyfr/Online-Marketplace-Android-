@@ -45,4 +45,9 @@
     <string name="product_name">Product Name</string>
     <string name="price">Price</string>
     <string name="description">Description</string>
+    <string name="email">Email Address</string>
+    <string name="company_ratings">Company Ratings : </string>
+    <string name="address_">Address :</string>
+    <string name="contact">Contact :</string>
+    <string name="all_products">All Products</string>
 </resources>
