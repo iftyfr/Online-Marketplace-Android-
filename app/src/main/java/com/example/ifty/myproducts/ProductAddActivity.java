@@ -39,6 +39,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -60,11 +61,11 @@ public class ProductAddActivity extends AppCompatActivity {
 
     private TextView deviceTpTV, transmissionTV, landTypeTV, landUnitsTV, houseUnitsTV;
 
-    private TextInputEditText locationET, brandET, modelET, engineET,modelYrET, titleET, descriptionET, priceET, bedsET, bathsET, landsizeET, sizeET, housesizeET, productNameET;
+    private TextInputEditText  brandET, modelET, engineET,modelYrET, titleET, descriptionET, priceET, bedsET, bathsET, landsizeET, sizeET, housesizeET, productNameET;
 
     private Button addPhotoBtn, addPostBtn;
 
-    private TextInputLayout brandEtLayout, modelEtLayout, engineEtLayout,  modelYrEtLayout, titleEtLayout, bedsEtLayout, bathsEtLayout, landsizeEtLayout, sizeEtLayout, housesizeEtLayout, productNameEtLayout;
+    private TextInputLayout brandEtLayout, modelEtLayout, engineEtLayout,  modelYrEtLayout, titleEtLayout, bedsEtLayout, bathsEtLayout, landsizeEtLayout, sizeEtLayout, housesizeEtLayout;
 
     private RadioGroup  deviceTpRG, transmissionRG;
     private RadioButton radioButton;
@@ -92,7 +93,7 @@ public class ProductAddActivity extends AppCompatActivity {
     private Toolbar prdctAddToolbar;
     private Uri postDownlUri=null;
     private Bitmap compressedImageFile;
-
+    private String company_name;
 
 
     @Override
@@ -111,7 +112,6 @@ public class ProductAddActivity extends AppCompatActivity {
         landUnitsTV = findViewById(R.id.landUnitsTV);
         houseUnitsTV = findViewById(R.id.houseUnitsTV);
         productNameET = findViewById(R.id.productNameET);
-        locationET = findViewById(R.id.locationET);
         brandET = findViewById(R.id.brandET);
         modelET = findViewById(R.id.modelET);
         engineET = findViewById(R.id.engineET);
@@ -149,6 +149,20 @@ public class ProductAddActivity extends AppCompatActivity {
         mStorageReference=FirebaseStorage.getInstance().getReference();
         firebaseFirestore=FirebaseFirestore.getInstance();
         user_id = mAuth.getCurrentUser().getUid();
+
+
+        firebaseFirestore.collection("Users").document(user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()){
+                    if (task.getResult().exists()){
+                        Toast.makeText(ProductAddActivity.this, "exist", Toast.LENGTH_SHORT).show();
+
+                        company_name = task.getResult().getString("companyName");
+                    }
+                }
+            }
+        });
 
 
         checkItem = getIntent().getStringExtra("item");
@@ -401,7 +415,6 @@ public class ProductAddActivity extends AppCompatActivity {
     }
 
     public void postAd(View view) {
-        final String location=Objects.requireNonNull(locationET.getText()).toString();
         final String productName= Objects.requireNonNull(productNameET.getText()).toString();
         final String price;
 
@@ -453,7 +466,7 @@ public class ProductAddActivity extends AppCompatActivity {
 
                         //.................Upload to Firebase ...............//
 
-        if (!TextUtils.isEmpty(location) && !TextUtils.isEmpty(productName) && !TextUtils.isEmpty(description) && !TextUtils.isEmpty(price) && postImageUri !=  null){
+        if (!TextUtils.isEmpty(productName) && !TextUtils.isEmpty(description) && !TextUtils.isEmpty(price) && postImageUri !=  null){
 
             mProgressBar.setVisibility(View.VISIBLE);
             final String randomeName = String.valueOf(System.currentTimeMillis());
@@ -496,7 +509,7 @@ public class ProductAddActivity extends AppCompatActivity {
                                         public void onSuccess(Uri uri) {
                                             Uri thumbDownloadUri= uri;
 
-                                            storeToFirestore(postDownlUri,thumbDownloadUri,productName,price,location,description,checkItem);
+                                            storeToFirestore(postDownlUri,thumbDownloadUri,productName,price,description,checkItem);
                                         }
                                     });
                                 }
@@ -514,11 +527,11 @@ public class ProductAddActivity extends AppCompatActivity {
 
     }
 
-    private void storeToFirestore(Uri postDownlUri, Uri thumbDownloadUri, String productName, String price, String location, String desc, String checkItem) {
+    private void storeToFirestore(Uri postDownlUri, Uri thumbDownloadUri, String productName, String price, String desc, String checkItem) {
         final Map<String,Object> newPostMap = new HashMap<>();
         newPostMap.put("productName",productName);
+        newPostMap.put("companyName",company_name);
         newPostMap.put("price",price);
-        newPostMap.put("location",location);
         newPostMap.put("description",desc);
         newPostMap.put("checkItem",checkItem);
         newPostMap.put("postImage",postDownlUri.toString());

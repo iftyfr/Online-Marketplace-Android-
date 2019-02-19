@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import de.hdodenhof.circleimageview.CircleImageView;
 import id.zelory.compressor.Compressor;
 
 import android.Manifest;
@@ -68,11 +67,16 @@ public class CustomerSetupActivity extends AppCompatActivity {
     private Uri mainDownloadUri;
     private Uri notChangedThumbUri;
     private Uri customerImageUri = null;
+    private String ifOrder;
+    private String postId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_setup);
+
+        ifOrder=getIntent().getStringExtra("ifOrder");
+        postId=getIntent().getStringExtra("postId");
 
         String intentChecker = getIntent().getStringExtra("intentChecker");
         if (intentChecker.equals("first_time")) {
@@ -98,12 +102,10 @@ public class CustomerSetupActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-
         mAuth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
         mStorageRef = FirebaseStorage.getInstance().getReference();
         user_id = mAuth.getCurrentUser().getUid();
-
 
         firebaseFirestore.collection("Customers").document(user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -111,7 +113,6 @@ public class CustomerSetupActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     if (task.getResult().exists()) {
                         Toast.makeText(CustomerSetupActivity.this, "exist", Toast.LENGTH_SHORT).show();
-
 
                         String customer_or_seller = task.getResult().getString("customerOrSeller");
                         String user_name = task.getResult().getString("userName");
@@ -223,7 +224,6 @@ public class CustomerSetupActivity extends AppCompatActivity {
         }
     }
 
-
     public void saveAccSettings(View view) {
         final String mobile_number = mobileNumber.getText().toString();
         final String customer_address = address.getText().toString();
@@ -317,8 +317,16 @@ public class CustomerSetupActivity extends AppCompatActivity {
             public void onComplete(Task<Void> task) {
                 if (task.isSuccessful()){
                     Toast.makeText(CustomerSetupActivity.this, "Settings Updated Successfully!", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(CustomerSetupActivity.this,MainActivity.class));
-                    finish();
+                    if (ifOrder.equals("fromOrder")){
+                        Intent intent = new Intent(CustomerSetupActivity.this,ProductOrderActivity.class);
+                        intent.putExtra("postId",postId);
+                        finish();
+                        startActivity(intent);
+                    }
+                    else {
+                        startActivity(new Intent(CustomerSetupActivity.this,MainActivity.class));
+                        finish();
+                    }
                 }
                 else {
                     String error = task.getException().toString();

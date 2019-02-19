@@ -3,16 +3,15 @@ package com.example.ifty.myproducts;
 import java.util.Date;
 
 public class Product extends ProductId {
-    String productName,price, location, description, checkItem, postImage,thumbImage,userId;
+    String productName,price, description, checkItem, postImage,thumbImage,userId;
     Date timestamp;
 
     public Product() {
     }
 
-    public Product(String productName, String price, String location, String description, String checkItem, String postImage, String thumbImage, String userId, Date timestamp) {
+    public Product(String productName, String price, String description, String checkItem, String postImage, String thumbImage, String userId, Date timestamp) {
         this.productName = productName;
         this.price = price;
-        this.location = location;
         this.description = description;
         this.checkItem = checkItem;
         this.postImage = postImage;
@@ -29,9 +28,6 @@ public class Product extends ProductId {
         return price;
     }
 
-    public String getLocation() {
-        return location;
-    }
 
     public String getDescription() {
         return description;
@@ -63,10 +59,6 @@ public class Product extends ProductId {
 
     public void setPrice(String price) {
         this.price = price;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
     }
 
     public void setDescription(String description) {

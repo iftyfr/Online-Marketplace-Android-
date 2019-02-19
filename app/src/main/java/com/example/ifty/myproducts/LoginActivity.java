@@ -25,13 +25,19 @@ public class LoginActivity extends AppCompatActivity {
     ProgressBar loginProgressBar;
     FirebaseAuth mAuth;
     private String customerOrSeller;
+    private String ifOrder=null;
+    private String postId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login); mAuth=FirebaseAuth.getInstance();
+        setContentView(R.layout.activity_login);
+
+        mAuth=FirebaseAuth.getInstance();
 
         customerOrSeller=getIntent().getStringExtra("customerOrSeller");
+        ifOrder=getIntent().getStringExtra("ifOrder");
+        postId=getIntent().getStringExtra("postId");
 
         loginEmailText= findViewById(R.id.login_email);
         loginPassText= findViewById(R.id.login_password);
@@ -66,7 +72,15 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()){
-                        sendToMain();
+                        if (ifOrder.equals("fromOrder")){
+                            Intent intent = new Intent(LoginActivity.this,ProductOrderActivity.class);
+                            intent.putExtra("postId",postId);
+                            finish();
+                            startActivity(intent);
+                        }
+                        else {
+                            sendToMain();
+                        }
                     }
                     else {
                         String errorMessage=task.getException().getMessage();
@@ -82,9 +96,29 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void createNewAccount(View view) {
-        Intent intent = new Intent(this,RegisterActivity.class);
-        intent.putExtra("customerOrSeller",customerOrSeller);
-        finish();
-        startActivity(intent);
+        if (ifOrder.equals("fromOrder")){
+            Intent intent = new Intent(this,RegisterActivity.class);
+            intent.putExtra("ifOrder","fromOrder");
+            intent.putExtra("postId",postId);
+            finish();
+            startActivity(intent);
+        }
+        else {
+            Intent intent = new Intent(this,RegisterActivity.class);
+            intent.putExtra("customerOrSeller",customerOrSeller);
+            intent.putExtra("ifOrder","notFromOrder");
+            finish();
+            startActivity(intent);}
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (ifOrder.equals("fromOrder")){
+            Intent intent = new Intent(LoginActivity.this,ProductOrderActivity.class);
+            intent.putExtra("postId",postId);
+            finish();
+            startActivity(intent);
+        }
     }
 }

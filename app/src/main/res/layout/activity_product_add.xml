@@ -19,38 +19,10 @@
             android:layout_marginBottom="10dp"
             android:id="@+id/prdctAddToolbar"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:background="#dcdfe4"
-            android:gravity="center"
-            android:text="Add location for your ad"
-            android:textColor="#000000"
-            android:textSize="17sp" />
-
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/password_text_input"
-            style="Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Location"
-            app:errorEnabled="true">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/locationET"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:inputType="text"
-                android:textColor="#000000"
-                android:textSize="19sp" />
-        </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:layout_marginTop="10dp"
             android:background="#dcdfe4"
             android:gravity="center"
             android:text="Add a photo of your product"

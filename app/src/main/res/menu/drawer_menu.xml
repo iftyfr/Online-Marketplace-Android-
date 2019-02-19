@@ -11,6 +11,55 @@
             android:onClick="navHome"
             android:icon="@drawable/home" />
         <item
+            android:id="@+id/nav_categories"
+            android:title="Categories"
+            android:icon="@drawable/category"
+            android:checked="true">
+
+            <menu>
+                <group>
+                    <item
+                        android:id="@+id/mobile_phones"
+                        android:title="Mobile Phones"
+                        android:onClick="mobilePhones"
+                        android:icon="@drawable/mobile" />
+                    <item
+                        android:id="@+id/mobile_accessories"
+                        android:title="Mobile Accessories"
+                        android:onClick="mobileAccessories"
+                        android:icon="@drawable/mobile_accessories" />
+                    <item
+                        android:id="@+id/computers_tablets"
+                        android:title="Computers &amp; Tablets"
+                        android:onClick="computersTablets"
+                        android:icon="@drawable/laptop_tab" />
+                    <item
+                        android:id="@+id/motorbikes_scooters"
+                        android:title="Motorbikes &amp; Scooters"
+                        android:onClick="motorbikesScooters"
+                        android:icon="@drawable/bike" />
+                    <item
+                        android:id="@+id/cars"
+                        android:title="Cars"
+                        android:onClick="cars"
+                        android:icon="@drawable/car" />
+                    <item
+                        android:id="@+id/houses"
+                        android:title="Houses"
+                        android:onClick="houses"
+                        android:icon="@drawable/house" />
+                    <item
+                        android:id="@+id/apartment_flats"
+                        android:title="Apartment &amp; Flats"
+                        android:onClick="apartmentFlats"
+                        android:icon="@drawable/flat" />
+
+                </group>
+
+            </menu>
+        </item>
+
+        <item
             android:id="@+id/nav_favourite"
             android:title="Favourites"
             android:onClick="favouriteProducts"
@@ -24,11 +73,11 @@
 
     <item android:title="Others">
         <menu>
-            <item
+           <!-- <item
                 android:id="@+id/company_profile"
                 android:title="My Company"
                 android:onClick="myCompanyProfile"
-                android:icon="@drawable/my_company" />
+                android:icon="@drawable/my_company" />-->
             <item
                 android:id="@+id/nav_share"
                 android:title="Share"

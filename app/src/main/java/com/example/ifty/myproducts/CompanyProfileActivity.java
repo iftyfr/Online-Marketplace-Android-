@@ -30,10 +30,13 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
 
-public class CompanyProfileActivity extends AppCompatActivity {
+public class CompanyProfileActivity extends AppCompatActivity implements ProductAdapter.FavouriteCheck {
 
     private ImageView profileImage;
     private TextView companyName;
@@ -53,6 +56,8 @@ public class CompanyProfileActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private DocumentSnapshot lastVisible;
     private Boolean isNewPostFirstLoad = true;
+    private String currentUserId;
+    private boolean isPostId = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +89,7 @@ public class CompanyProfileActivity extends AppCompatActivity {
         firebaseFirestore=FirebaseFirestore.getInstance();
         mAuth=FirebaseAuth.getInstance();
         if (mAuth.getCurrentUser()!=null){
-            String currentUserId=mAuth.getUid();
+            currentUserId=mAuth.getUid();
             if (currentUserId.equals(userId)){
                 editProfile.setVisibility(View.VISIBLE);
             }
@@ -131,7 +136,7 @@ public class CompanyProfileActivity extends AppCompatActivity {
 
 
         productList=new ArrayList<>();
-        productAdapter = new ProductAdapter(this,productList);
+        productAdapter = new ProductAdapter(this,productList,this);
         profileRecyclerProducts.setLayoutManager(new GridLayoutManager(this,2));
         profileRecyclerProducts.setAdapter(productAdapter);
 
@@ -218,4 +223,137 @@ public class CompanyProfileActivity extends AppCompatActivity {
         onBackPressed();
         return true;
     }
+
+
+   /* @Override
+    public boolean favouriteCheck(final String post_id, int numb) {
+
+        if (mAuth.getCurrentUser() != null) {
+            firebaseFirestore.collection("Customers").document(userId).collection("Favourites").document(post_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            //Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                            isPostId = true;
+                            Toast.makeText(CompanyProfileActivity.this, "yes", Toast.LENGTH_SHORT).show();
+
+                        } else {
+                            //Log.d(TAG, "No such document");
+                            isPostId = false;
+                            Toast.makeText(CompanyProfileActivity.this, "no", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        //Log.d(TAG, "get failed with ", task.getException());
+                    }
+                }
+            });
+
+            return isPostId;
+        } else {
+            return false;
+        }
+    }*/
+
+
+    @Override
+    public boolean favouriteCheck(final String post_id, int numb) {
+
+        if (mAuth.getCurrentUser() != null) {
+            firebaseFirestore.collection("Customers").document(currentUserId).collection("Favourites").document(post_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            //Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                            isPostId = true;
+                            Toast.makeText(CompanyProfileActivity.this, "yes", Toast.LENGTH_SHORT).show();
+
+                        } else {
+                            //Log.d(TAG, "No such document");
+                            isPostId = false;
+                            Toast.makeText(CompanyProfileActivity.this, "no", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        //Log.d(TAG, "get failed with ", task.getException());
+                    }
+                }
+            });
+
+            if (!isPostId) {
+
+                if (numb == 1) {
+                    firebaseFirestore.collection("Posts").document(post_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                if (Objects.requireNonNull(task.getResult()).exists()) {
+                                    String product_name = task.getResult().getString("productName");
+                                    String price = task.getResult().getString("price");
+                                    String desc = task.getResult().getString("description");
+                                    String check_item = task.getResult().getString("checkItem");
+                                    String user_id = task.getResult().getString("userId");
+                                    String product_image = task.getResult().getString("postImage");
+                                    String thumb_image = task.getResult().getString("thumbImage");
+
+                                    Map<String, String> favMap = new HashMap<>();
+                                    favMap.put("productName", Objects.requireNonNull(product_name));
+                                    favMap.put("price", Objects.requireNonNull(price));
+                                    favMap.put("description", Objects.requireNonNull(desc));
+                                    favMap.put("postId", post_id);
+                                    favMap.put("checkItem", Objects.requireNonNull(check_item));
+                                    favMap.put("userId", Objects.requireNonNull(user_id));
+                                    favMap.put("postImage", Objects.requireNonNull(product_image));
+                                    favMap.put("thumbImage", Objects.requireNonNull(thumb_image));
+
+                                    firebaseFirestore.collection("Customers").document(currentUserId).collection("Favourites").document(post_id).set(favMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                Toast.makeText(CompanyProfileActivity.this, "Added to Favourite list!", Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                Toast.makeText(CompanyProfileActivity.this, "ERROR : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+
+                                } else {
+                                    Toast.makeText(CompanyProfileActivity.this, "Error : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            } else {
+                                Toast.makeText(CompanyProfileActivity.this, "Error : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+
+                }
+
+                return false;
+
+            } else {
+                if (numb == 1) {
+                    firebaseFirestore.collection("Customers").document(currentUserId).collection("Favourites").document(post_id).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(CompanyProfileActivity.this, "removed from favourite.", Toast.LENGTH_SHORT).show();
+
+                            }
+                        }
+                    });
+                }
+                isPostId=false;
+                return true;
+            }
+        } else {
+            return false;
+        }
+    }
+
+   /* @Override
+    public void myFave(boolean isFav, String postId, ImageView img) {
+
+    }*/
 }

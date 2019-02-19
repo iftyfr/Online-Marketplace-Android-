@@ -28,10 +28,20 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     private int fav_image = 1;
     private String companyName = null;
     private String companyThumbnail=null;
+    private FavouriteCheck favouriteCheck;
+    private boolean isFav;
 
-    public ProductAdapter(Context context, ArrayList<Product> productList) {
+   // private IsFave isFave;
+
+    ProductAdapter(Context context, ArrayList<Product> productList, FavouriteCheck favouriteCheck) {
         this.context = context;
         this.productList = productList;
+        this.favouriteCheck = favouriteCheck;
+        //this.isFave = isFave;
+    }
+
+    public interface FavouriteCheck {
+        boolean favouriteCheck (String postId, int numb);
     }
 
     @NonNull
@@ -68,6 +78,15 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             }
         });
 
+        isFav=favouriteCheck.favouriteCheck(product.ProductId,0);
+
+        if (isFav){
+            Glide.with(context.getApplicationContext()).load(R.drawable.favourite_red).into(holder.favouriteImage);
+        }
+        else {
+            Glide.with(context.getApplicationContext()).load(R.drawable.favourite_gray).into(holder.favouriteImage);
+        }
+
         Glide.with(context).load(product.getPostImage()).into(holder.productImage);
         holder.productName.setText(product.getProductName());
         holder.price.setText(product.getPrice());
@@ -75,13 +94,20 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         holder.favouriteImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (fav_image ==1){
+                isFav=favouriteCheck.favouriteCheck(product.ProductId,1);
+
+                if (!isFav) {
+                    //create fav doccumnet in firebae
+                } else {
+
+                }
+
+                if (!isFav){
                     Glide.with(context.getApplicationContext()).load(R.drawable.favourite_red).into(holder.favouriteImage);
-                    fav_image=2;
                 }
                 else {
                     Glide.with(context.getApplicationContext()).load(R.drawable.favourite_gray).into(holder.favouriteImage);
-                    fav_image=1;
+
                 }
             }
         });
@@ -123,12 +149,43 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
                 context.startActivity(intent);
             }
         });
+
+
+
+        /*----------------
+
+
+        holder.favouriteImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                isFave.myFave(isFav, product.ProductId, holder.favouriteImage);
+            }
+        });
+
+        -----*/
     }
 
     @Override
     public int getItemCount() {
         return productList.size();
     }
+
+
+    /*------------------*/
+/*
+    public void setOnmYFave(IsFave isFave) {
+        this.isFaveOn = isFave;
+    }
+
+
+    public interface IsFave {
+        void myFave(boolean isFav, String postId, ImageView img);
+    }
+
+
+    --------------------*/ //vuture somossa
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
         ImageView companyImage, productImage, favouriteImage;

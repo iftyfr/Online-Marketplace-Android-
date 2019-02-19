@@ -21,10 +21,19 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Queue;
+
+import javax.annotation.Nullable;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -44,10 +53,13 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar mToolbar;
     private DrawerLayout drawer;
     private HomeFragment homeFragment;
-    private ImageView navImage;
-    private TextView navText;
+    private CategoryFilterFragment categoryFilterFragment;
+    private ImageView navImage,orderNotify;
+    private TextView navText, orderCount;
     String user_id;
     Dialog loginDialog;
+    private NavigationView navigationView;
+    private ArrayList<Order> orderList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         mToolbar=findViewById(R.id.main_toolbar);
         setSupportActionBar(mToolbar);
 
+        orderList=new ArrayList<>();
 
 
         loginDialog= new Dialog(this);
@@ -67,11 +80,15 @@ public class MainActivity extends AppCompatActivity {
         firebaseFirestore=FirebaseFirestore.getInstance();
 
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         View hView =  navigationView.getHeaderView(0);
         navImage=hView.findViewById(R.id.nav_image);
         navText=hView.findViewById(R.id.nav_text);
         addNewBtn=findViewById(R.id.postAddBtn);
+        orderCount=findViewById(R.id.orderCount);
+        orderNotify=findViewById(R.id.orderNotify);
+
+        navigationView.setItemIconTintList(null);
 
         if (mAuth.getCurrentUser()!=null){
             user_id = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
@@ -83,13 +100,36 @@ public class MainActivity extends AppCompatActivity {
                             String customer_or_seller = task.getResult().getString("customerOrSeller");
                             if (customer_or_seller.equals("seller")){
                                 addNewBtn.setVisibility(View.VISIBLE);
+                                orderNotify.setVisibility(View.VISIBLE);
+
+                                firebaseFirestore.collection("Users").document(user_id).collection("Orders").addSnapshotListener(MainActivity.this,new EventListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                                        if (queryDocumentSnapshots != null){
+                                            if(!queryDocumentSnapshots.isEmpty()){
+                                                for (DocumentChange doc: queryDocumentSnapshots.getDocumentChanges()){
+                                                    if (doc.getType()==DocumentChange.Type.ADDED){
+                                                        Order order = doc.getDocument().toObject(Order.class);
+                                                        orderList.add(order);
+                                                        orderCount.setVisibility(View.VISIBLE);
+                                                        orderCount.setText(String.valueOf(orderList.size()));
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                    }
+                                });
+
                             }
                             String user_name = task.getResult().getString("userName");
                             String customer_Thumbnail = task.getResult().getString("customerThumbnail");
                                navText.setText(user_name);
                             RequestOptions placeHolderRequest = new RequestOptions();
                             placeHolderRequest.placeholder(R.drawable.default_user_image);
-                            Glide.with(MainActivity.this).applyDefaultRequestOptions(placeHolderRequest).load(customer_Thumbnail).into(navImage);
+                            if(customer_Thumbnail!=null){
+                                Glide.with(MainActivity.this).applyDefaultRequestOptions(placeHolderRequest).load(customer_Thumbnail).into(navImage);
+                            }
                         }
                     }
                     else {
@@ -180,6 +220,7 @@ public class MainActivity extends AppCompatActivity {
                             else if (customer_or_seller.equals("customer")){
                                 Intent intent = new Intent(MainActivity.this,CustomerSetupActivity.class);
                                 intent.putExtra("intentChecker","not_first_time");
+                                intent.putExtra("ifOrder","notFromOrder");
                                 startActivity(intent);
                             }
 
@@ -195,19 +236,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void navHome(MenuItem item) {
-        Toast.makeText(this, "Home", Toast.LENGTH_SHORT).show();
+        replaceFragment(homeFragment);
+        drawer.closeDrawer(GravityCompat.START);
     }
 
-    public void myCompanyProfile(MenuItem item) {
+    /*public void myCompanyProfile(MenuItem item) {
         Toast.makeText(this, "My Company", Toast.LENGTH_SHORT).show();
-    }
+    }*/
 
     public void favouriteProducts(MenuItem item) {
-        Toast.makeText(this, "Favourite..", Toast.LENGTH_SHORT).show();
+        if (mAuth.getCurrentUser()!=null){
+            Intent intent = new Intent(MainActivity.this,FavouriteActivity.class);
+            finish();
+            startActivity(intent);
+        }
+        else {
+            Toast.makeText(this, "You are not logged in.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void logoutCustomer(MenuItem item) {
-        mAuth.signOut(); Intent intent = new Intent(MainActivity.this,MainActivity.class);
+        mAuth.signOut();
+        Intent intent = new Intent(MainActivity.this,MainActivity.class);
         Toast.makeText(this, "You just logged out.", Toast.LENGTH_SHORT).show();
         finish();
         startActivity(intent);
@@ -228,6 +278,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     Intent intent = new Intent(MainActivity.this,LoginActivity.class);
                     intent.putExtra("customerOrSeller","customer");
+                    intent.putExtra("ifOrder","notFromOrder");
                     finish();
                     startActivity(intent);
                 }
@@ -238,6 +289,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     Intent intent = new Intent(MainActivity.this,LoginActivity.class);
                     intent.putExtra("customerOrSeller","seller");
+                    intent.putExtra("ifOrder","notFromOrder");
                     finish();
                     startActivity(intent);
                 }
@@ -250,6 +302,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     Intent intent = new Intent(MainActivity.this,CustomerSetupActivity.class);
                     intent.putExtra("customerOrSeller","customer");
+                    intent.putExtra("ifOrder","notFromOrder");
                     finish();
                     startActivity(intent);
                 }
@@ -274,5 +327,73 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.main_container, fragment);
         fragmentTransaction.commit();
+    }
+
+    public void mobilePhones(MenuItem item) {
+        Bundle bundle = new Bundle();
+        bundle.putString("checkItem","Mobile Phones");
+        categoryFilterFragment = new CategoryFilterFragment();
+        categoryFilterFragment.setArguments(bundle);
+        replaceFragment(categoryFilterFragment);
+        drawer.closeDrawer(GravityCompat.START);
+    }
+
+    public void mobileAccessories(MenuItem item) {
+        Bundle bundle = new Bundle();
+        bundle.putString("checkItem","Mobile Phone Accessories");
+        categoryFilterFragment = new CategoryFilterFragment();
+        categoryFilterFragment.setArguments(bundle);
+        replaceFragment(categoryFilterFragment);
+        drawer.closeDrawer(GravityCompat.START);
+    }
+
+    public void computersTablets(MenuItem item) {
+        Bundle bundle = new Bundle();
+        bundle.putString("checkItem","Computers & Tablets");
+        categoryFilterFragment = new CategoryFilterFragment();
+        categoryFilterFragment.setArguments(bundle);
+        replaceFragment(categoryFilterFragment);
+        drawer.closeDrawer(GravityCompat.START);
+    }
+
+    public void motorbikesScooters(MenuItem item) {
+        Bundle bundle = new Bundle();
+        bundle.putString("checkItem","Motorbikes & Scooters");
+        categoryFilterFragment = new CategoryFilterFragment();
+        categoryFilterFragment.setArguments(bundle);
+        replaceFragment(categoryFilterFragment);
+        drawer.closeDrawer(GravityCompat.START);
+    }
+
+    public void cars(MenuItem item) {
+        Bundle bundle = new Bundle();
+        bundle.putString("checkItem","Cars");
+        categoryFilterFragment = new CategoryFilterFragment();
+        categoryFilterFragment.setArguments(bundle);
+        replaceFragment(categoryFilterFragment);
+        drawer.closeDrawer(GravityCompat.START);
+    }
+
+    public void houses(MenuItem item) {
+        Bundle bundle = new Bundle();
+        bundle.putString("checkItem","Houses");
+        categoryFilterFragment = new CategoryFilterFragment();
+        categoryFilterFragment.setArguments(bundle);
+        replaceFragment(categoryFilterFragment);
+        drawer.closeDrawer(GravityCompat.START);
+    }
+
+    public void apartmentFlats(MenuItem item) {
+        Bundle bundle = new Bundle();
+        bundle.putString("checkItem","Apartment & Flats");
+        categoryFilterFragment = new CategoryFilterFragment();
+        categoryFilterFragment.setArguments(bundle);
+        replaceFragment(categoryFilterFragment);
+        drawer.closeDrawer(GravityCompat.START);
+    }
+
+    public void checkOutOrder(View view) {
+        Intent intent = new Intent(this,OrderNotificationActivity.class);
+        startActivity(intent);
     }
 }

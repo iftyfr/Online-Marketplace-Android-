@@ -25,6 +25,8 @@ public class RegisterActivity extends AppCompatActivity {
     private ProgressBar regProgressBar;
     private FirebaseAuth mAuth;
     private String customerOrSeller;
+    private String ifOrder;
+    private String postId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +35,8 @@ public class RegisterActivity extends AppCompatActivity {
         mAuth=FirebaseAuth.getInstance();
 
         customerOrSeller=getIntent().getStringExtra("customerOrSeller");
+        ifOrder=getIntent().getStringExtra("ifOrder");
+        postId=getIntent().getStringExtra("postId");
 
         emailText=findViewById(R.id.reg_email);
         passwordText=findViewById(R.id.reg_password);
@@ -80,6 +84,10 @@ public class RegisterActivity extends AppCompatActivity {
                             else if (customerOrSeller.equals("customer")){
                                 Intent intent = new Intent(RegisterActivity.this,CustomerSetupActivity.class);
                                 intent.putExtra("intentChecker","first_time");
+                                if (ifOrder.equals("fromOrder")){
+                                    intent.putExtra("ifOrder","fromOrder");
+                                    intent.putExtra("postId",postId);
+                                }
                                 finish();
                                 startActivity(intent);
                             }
@@ -102,8 +110,18 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void existingAccount(View view) {
-        Intent intent = new Intent(this,LoginActivity.class);
-        finish();
-        startActivity(intent);
+        if (ifOrder.equals("fromOrder")){
+            Intent intent = new Intent(this,LoginActivity.class);
+            intent.putExtra("ifOrder","fromOrder");
+            intent.putExtra("customerOrSeller",customerOrSeller);
+            intent.putExtra("postId",postId);
+        }
+        else {
+            Intent intent = new Intent(this,LoginActivity.class);
+            intent.putExtra("ifOrder","notFromOrder");
+            intent.putExtra("customerOrSeller",customerOrSeller);
+            finish();
+            startActivity(intent);
+        }
     }
 }

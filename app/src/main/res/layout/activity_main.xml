@@ -22,7 +22,33 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" >
+
+            <TextView
+                android:id="@+id/orderCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginEnd="30dp"
+                android:text="0"
+                android:visibility="invisible"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/colorAccent"
+                android:layout_marginBottom="30dp"
+                />
+
+            <ImageView
+                android:id="@+id/orderNotify"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:visibility="gone"
+                android:layout_gravity="end"
+                android:onClick="checkOutOrder"
+                app:srcCompat="@drawable/order"
+                tools:layout_editor_absoluteX="334dp"
+                tools:layout_editor_absoluteY="10dp" />
+        </androidx.appcompat.widget.Toolbar>
 
 
         <FrameLayout
@@ -63,6 +89,8 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:id="@+id/nav_view"
+        app:itemIconSize="25dp"
+        app:itemTextColor="@color/colorAccent"
         android:layout_gravity="start"
         app:headerLayout="@layout/nav_header"
         app:menu="@menu/drawer_menu"

@@ -50,4 +50,15 @@
     <string name="address_">Address :</string>
     <string name="contact">Contact :</string>
     <string name="all_products">All Products</string>
+    <string name="qty">Quantity ?</string>
+    <string name="product_price">Product\'s Price :</string>
+    <string name="shipping">Shipping Fee :</string>
+    <string name="total_price">Total Price :</string>
+    <string name="confirm_order">Confirm Order</string>
+    <string name="handle_info">To handle your information easily,</string>
+    <string name="from">From</string>
+    <string name="orders">Orders :</string>
+    <string name="name">Name :</string>
+    <string name="altContact">Alt. Contact :</string>
+    <string name="done">Done</string>
 </resources>
